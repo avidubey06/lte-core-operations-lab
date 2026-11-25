@@ -23,3 +23,11 @@ class ChangePolicyTests(unittest.TestCase):
         for after in ({}, {"A": site(198, duration=15)}, {"A": site(98, attempts=99)}):
             with self.subTest(after=after):
                 self.assertEqual(self.result({"A": site(198)}, after), "review")
+
+    def test_canary_drop_controls_decision_despite_improving_aggregate(self):
+        before = {"A": site(1960, attempts=2000), "SITE-03": site(198)}
+        after = {"A": site(1980, attempts=2000), "SITE-03": site(182)}
+        report = compare(before, after, self.policy)
+        self.assertGreater(report["after_totals"]["success_pct"], report["before_totals"]["success_pct"])
+        self.assertEqual(report["decision"], "rollback recommendation")
+        self.assertEqual(report["sites"][1]["change_pp"], -8)
