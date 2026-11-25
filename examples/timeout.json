@@ -1,0 +1,10 @@
+[
+  {
+    "attempt_id": "a06",
+    "exchange_id": "s6a-a06",
+    "status": "timeout observed",
+    "request_elapsed_ms": 20.0,
+    "terminal_elapsed_ms": 1200.0,
+    "request_to_terminal_ms": 1180.0
+  }
+]

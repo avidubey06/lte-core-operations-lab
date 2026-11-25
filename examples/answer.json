@@ -1,0 +1,10 @@
+[
+  {
+    "attempt_id": "a01",
+    "exchange_id": "s6a-a01",
+    "status": "answer observed",
+    "request_elapsed_ms": 20.0,
+    "terminal_elapsed_ms": 45.0,
+    "request_to_terminal_ms": 25.0
+  }
+]

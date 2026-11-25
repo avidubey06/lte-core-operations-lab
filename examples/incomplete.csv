@@ -1,0 +1,3 @@
+attempt_id,timestamp_utc,component,event,exchange_id
+a06,2026-01-01T09:01:00.000Z,MME,initial_ue_message_received,
+a06,2026-01-01T09:01:00.020Z,MME,authentication_information_request_sent,s6a-a06

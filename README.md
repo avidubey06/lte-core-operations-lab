@@ -30,6 +30,19 @@ Each CSV row represents one completed or failed attempt. Supply a unique `attemp
 | Median attach latency | Median on completed attempts | 220 ms |
 | Leading failure category | Highest count among failed attempts | S6a authentication timeout (2 of 5 failures) |
 
+## Run the event trace investigation
+
+```sh
+python3 trace_analysis.py attach-events.csv
+python3 -m unittest -v
+```
+
+Compare the output with the [generated report](attach-events.json). Standalone examples include [answer observed](examples/answer.json), [timeout observed](examples/timeout.json), and [trace incomplete](examples/incomplete.json), each with a matching CSV. The [test suite](test_trace_analysis.py) also checks shuffled rows, duplicates, invalid timestamps, and mismatched exchange IDs.
+
+The analyzer sorts timezone-aware timestamps and matches MME events by attempt ID and exchange ID. Exact duplicate events are collapsed after timestamps are normalized to UTC. Repeated requests with distinct timestamps for the same exchange and competing first terminal events at the same timestamp are rejected. Classification uses the first matching terminal event at or after the request. An unmatched request remains incomplete.
+
+The MME recorded a timeout for this exchange. I’d check whether the HSS received the request and sent an answer, then correlate the response path with the MME logs.
+
 ## Trace the attach
 
 This simplified control-plane view covers initial EPS attach. It omits optional steps and detailed bearer signalling.
@@ -60,13 +73,13 @@ Attempts a06 and a07 reached the modeled S6a authentication stage and timed out.
 
 ### Compare a successful attach and a timeout
 
-The [synthetic event trace](attach-events.csv) shows timestamped MME-side events for two attempts in the batch.
+The [synthetic event trace](attach-events.csv) shows timestamped MME-side events for two attempts in the batch. Times below are elapsed since the first recorded event of each attempt.
 
 | Step | Successful attempt (a01) | Timed-out attempt (a06) | What I’d check |
 | --- | --- | --- | --- |
-| Last shared step | MME sends Authentication Information Request after 20 ms | MME sends the same request type after 20 ms | Match the exchange ID and compare timestamps across peers |
-| First difference | MME records the matching Answer after 45 ms | MME records a timeout after 1,200 ms with no matching Answer in the trace | Check whether the HSS received the request and sent an Answer. If it sent one, check the response path and MME logs |
-| Outcome | Attach Complete after 180 ms | No Attach Complete in this trace | After a change, repeat both scenarios and compare the first point where they diverge |
+| Last shared step | MME sends Authentication Information Request at 20 ms elapsed | MME sends the same request type at 20 ms elapsed | Match the exchange ID and compare timestamps across peers |
+| First difference | MME records the matching Answer at 45 ms elapsed (25 ms after the request) | MME records a timeout at 1,200 ms elapsed (1,180 ms after the request) with no matching Answer in the trace | Check whether the HSS received the request and sent an Answer. If it sent one, check the response path and MME logs |
+| Outcome | Attach Complete at 180 ms elapsed | No Attach Complete in this trace | After a change, repeat both scenarios and compare the first point where they diverge |
 
 The missing Answer in these MME-side records narrows the investigation to the S6a exchange. HSS-side transaction logs and peer or transport evidence would help identify where the exchange stopped.
 
