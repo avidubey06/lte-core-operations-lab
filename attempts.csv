@@ -1,0 +1,11 @@
+attempt_id,outcome,stage,latency_ms
+a01,accepted,attach_complete,180
+a02,accepted,attach_complete,220
+a03,accepted,attach_complete,200
+a04,accepted,attach_complete,240
+a05,accepted,attach_complete,260
+a06,auth_timeout,s6a_auth,1200
+a07,auth_timeout,s6a_auth,1250
+a08,profile_missing,s6a_location_update,350
+a09,transport_timeout,s1_initial_ue,1500
+a10,session_timeout,s11_create_session,1300
