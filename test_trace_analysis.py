@@ -10,7 +10,7 @@ ROOT = Path(__file__).parent
 
 class TraceAnalysisTests(unittest.TestCase):
     def test_checked_in_reports(self):
-        for name in ('attach-events', 'examples/answer', 'examples/timeout', 'examples/incomplete'):
+        for name in ('attach-events', 'examples/answer', 'examples/timeout', 'examples/incomplete', 'examples/retry'):
             with self.subTest(name=name):
                 fixture = (ROOT / f'{name}.csv').read_text()
                 expected = json.loads((ROOT / f'{name}.json').read_text())
@@ -32,3 +32,11 @@ class TraceAnalysisTests(unittest.TestCase):
         [exchange] = analyze(io.StringIO(sample))
         self.assertEqual(exchange['status'], 'trace incomplete')
         self.assertIsNone(exchange['terminal_elapsed_ms'])
+
+    def test_retry_exchanges_within_one_attempt_are_independent(self):
+        with (ROOT / 'examples/retry.csv').open() as source:
+            first, retry = analyze(source)
+        self.assertEqual((first['exchange_id'], first['status']), ('s6a-first', 'timeout observed'))
+        self.assertEqual((retry['exchange_id'], retry['status']), ('s6a-retry', 'answer observed'))
+        self.assertEqual(first['request_to_terminal_ms'], 1180)
+        self.assertEqual(retry['request_to_terminal_ms'], 25)
