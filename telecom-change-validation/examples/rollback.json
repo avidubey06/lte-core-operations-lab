@@ -1,0 +1,78 @@
+{
+  "change_id": "LAB-017",
+  "rollback_drop_pp": 5.0,
+  "minimum_attempts": 100,
+  "decision": "rollback recommendation",
+  "before_totals": {
+    "attempts": 4200,
+    "successes": 4118,
+    "success_pct": 98.04761904761905
+  },
+  "after_totals": {
+    "attempts": 4200,
+    "successes": 4142,
+    "success_pct": 98.61904761904762
+  },
+  "sites": [
+    {
+      "site_id": "SITE-01",
+      "before": {
+        "window_minutes": 30,
+        "attempts": 2000,
+        "successes": 1960,
+        "median_latency_ms": 200
+      },
+      "after": {
+        "window_minutes": 30,
+        "attempts": 2000,
+        "successes": 1980,
+        "median_latency_ms": 200
+      },
+      "change_pp": 1.0,
+      "before_pct": 98.0,
+      "after_pct": 99.0,
+      "decision": "pass",
+      "reason": "site drop below rollback threshold"
+    },
+    {
+      "site_id": "SITE-02",
+      "before": {
+        "window_minutes": 30,
+        "attempts": 2000,
+        "successes": 1960,
+        "median_latency_ms": 210
+      },
+      "after": {
+        "window_minutes": 30,
+        "attempts": 2000,
+        "successes": 1980,
+        "median_latency_ms": 210
+      },
+      "change_pp": 1.0,
+      "before_pct": 98.0,
+      "after_pct": 99.0,
+      "decision": "pass",
+      "reason": "site drop below rollback threshold"
+    },
+    {
+      "site_id": "SITE-03",
+      "before": {
+        "window_minutes": 30,
+        "attempts": 200,
+        "successes": 198,
+        "median_latency_ms": 220
+      },
+      "after": {
+        "window_minutes": 30,
+        "attempts": 200,
+        "successes": 182,
+        "median_latency_ms": 310
+      },
+      "change_pp": -8.0,
+      "before_pct": 99.0,
+      "after_pct": 91.0,
+      "decision": "rollback recommendation",
+      "reason": "site drop meets rollback threshold"
+    }
+  ]
+}

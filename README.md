@@ -98,3 +98,7 @@ After an approved change, repeat a known-good and known-failing test attach, ver
 The runnable fixture covers attach outcomes. Charging, roaming and rollout entries are test design examples. For 3G UMTS and 2G GSM/GPRS, compare packet-domain SGSN/GGSN flows and use RAT-specific procedures and denominators when comparing KPIs.
 
 Reference: [3GPP TS 23.401 via ETSI, clause 5.3.2.1](https://www.etsi.org/deliver/etsi_ts/123400_123499/123401/17.11.00_60/ts_123401v171100p.pdf).
+
+## Related project
+
+[Telecom change validation](telecom-change-validation/README.md) compares pre- and post-change KPIs across sites.

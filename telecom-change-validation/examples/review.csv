@@ -1,0 +1,4 @@
+site_id,window_minutes,attempts,successes,median_latency_ms
+SITE-01,30,2000,1960,200
+SITE-02,30,2000,1960,210
+SITE-03,30,50,49,220
