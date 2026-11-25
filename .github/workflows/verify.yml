@@ -1,0 +1,24 @@
+name: Verify lab reports
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test LTE trace analysis and reproduce reports
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v
+          for fixture in attach-events examples/answer examples/timeout examples/incomplete examples/retry; do
+            python3 trace_analysis.py "$fixture.csv" | diff -u "$fixture.json" -
+          done
+      - name: Test change validation and reproduce reports
+        working-directory: telecom-change-validation
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v
+          for outcome in pass review rollback; do
+            python3 validate.py examples/before.csv "examples/$outcome.csv" examples/policy.json | diff -u "examples/$outcome.json" -
+          done
