@@ -37,11 +37,13 @@ python3 trace_analysis.py attach-events.csv
 python3 -m unittest -v
 ```
 
-Compare the output with the [generated report](attach-events.json). Standalone examples include [answer observed](examples/answer.json), [timeout observed](examples/timeout.json), and [trace incomplete](examples/incomplete.json), each with a matching CSV. The [test suite](test_trace_analysis.py) also checks shuffled rows, duplicates, invalid timestamps, and mismatched exchange IDs.
+Compare the output with the [generated report](attach-events.json). It uses [synthetic MME-side events](attach-events.csv) and establishes what this capture recorded and when. It takes peer-side evidence to locate the fault. See the [incident handover](docs/incident-handover.md) for the next checks. Standalone examples include [answer observed](examples/answer.json), [timeout observed](examples/timeout.json), and [trace incomplete](examples/incomplete.json), each with a matching CSV. The [test suite](test_trace_analysis.py) also checks shuffled rows, duplicates, invalid timestamps, and mismatched exchange IDs.
 
 The analyzer sorts timezone-aware timestamps and matches MME events by attempt ID and exchange ID. Exact duplicate events are collapsed after timestamps are normalized to UTC. Repeated requests with distinct timestamps for the same exchange and competing first terminal events at the same timestamp are rejected. Classification uses the first matching terminal event at or after the request. An unmatched request remains incomplete.
 
 The MME recorded a timeout for this exchange. I’d check whether the HSS received the request and sent an answer, then correlate the response path with the MME logs.
+
+Try the [retry fixture](examples/retry.csv) with `python3 trace_analysis.py examples/retry.csv`. The [expected JSON](examples/retry.json) shows an explicit timeout on the first exchange and a matching answer on the retry within the same attach attempt.
 
 ## Trace the attach
 
